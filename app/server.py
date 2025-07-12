@@ -1,8 +1,9 @@
-from fastapi import FastAPI, UploadFile
-from uuid import uuid4
+from fastapi import FastAPI, UploadFile, Path
+from bson import ObjectId
 from .utils.file import save_to_disk
-from .db.collections.file import files_collection, FileSchema
-
+from .db.collections.files import files_collection, FileSchema
+from .queue.q import q
+from .queue.workers import process_file
 
 app = FastAPI()
 
@@ -11,6 +12,16 @@ app = FastAPI()
 def hello():
     return {"status": "healthy"}
 
+@app.get("/{id}")
+async def get_file_by_id(id: str = Path(..., description="Id of the file")):
+    db_file = await files_collection.find_one({"_id": ObjectId(id)})
+
+    return {
+        "_id": str(db_file["_id"]),
+        "name": db_file["name"],
+        "status": db_file["status"],
+        "result": db_file["result"] if "result" in db_file else None
+    }
 
 @app.post("/upload")
 async def upload_file(file: UploadFile):
@@ -26,7 +37,7 @@ async def upload_file(file: UploadFile):
     await save_to_disk(file=await file.read(),path=file_path)
     
     # queue kr diya
-    print("pushing into queue")
+    q.enqueue(process_file, str(db_file.inserted_id), file_path)
 
     # save to mongodb
     await files_collection.update_one({"_id": db_file.inserted_id},{
