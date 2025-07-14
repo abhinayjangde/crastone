@@ -24,7 +24,7 @@ async def process_file(id: str, file_path: str):
             "status": "processing"
         }
     })
-
+    print("[0] file path ", file_path + " and id " + id)
     # convert pdf to image
 
     pages = convert_from_path(file_path)
@@ -35,6 +35,7 @@ async def process_file(id: str, file_path: str):
         image.save(image_save_path, "JPEG")
         images.append(image_save_path)
 
+    print("[0] images path", images)
     await files_collection.update_one({"_id": ObjectId(id)}, {
         "$set": {
             "status": "converting to images success"
@@ -60,6 +61,7 @@ async def process_file(id: str, file_path: str):
         ],
     )
 
+    print("[0] after gpt call", result)
     await files_collection.update_one({"_id": ObjectId(id)}, {
         "$set": {
             "status":"processed",
@@ -67,3 +69,4 @@ async def process_file(id: str, file_path: str):
         }
     })
     
+    # Again we can, new queue add to send notification to user 

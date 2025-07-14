@@ -11,7 +11,9 @@ pip install python-multipart
 
 # Local Development Setups
 
-1. Create a virtual environment
+1. Create VENV and activate
 ```
 python -m venv venv
+source /venv/bin/activate (Linux)
+./venv/Scripts/activate (Windows)
 ```
