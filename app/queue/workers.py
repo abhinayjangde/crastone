@@ -24,7 +24,7 @@ async def process_file(id: str, file_path: str):
             "status": "processing"
         }
     })
-    print("[0] file path ", file_path + " and id " + id)
+    # print("[0] file path ", file_path + " and id " + id)
     # convert pdf to image
 
     pages = convert_from_path(file_path)
@@ -35,7 +35,7 @@ async def process_file(id: str, file_path: str):
         image.save(image_save_path, "JPEG")
         images.append(image_save_path)
 
-    print("[0] images path", images)
+    # print("[0] images path", images)
     await files_collection.update_one({"_id": ObjectId(id)}, {
         "$set": {
             "status": "converting to images success"
@@ -46,7 +46,7 @@ async def process_file(id: str, file_path: str):
 
     base64_images =[encode_image(img) for img in images]
     result = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-5-nano",
         input=[
             {
                 "role": "user",
@@ -61,7 +61,7 @@ async def process_file(id: str, file_path: str):
         ],
     )
 
-    print("[0] after gpt call", result)
+    # print("[0] after gpt call", result)
     await files_collection.update_one({"_id": ObjectId(id)}, {
         "$set": {
             "status":"processed",
