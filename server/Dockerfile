@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install system dependencies (poppler for IronPDF/PDF processing)
+# Install system dependencies (poppler for PDF processing)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends poppler-utils curl && \
     rm -rf /var/lib/apt/lists/*
@@ -20,10 +20,10 @@ RUN uv sync --no-dev
 COPY src/ src/
 
 # Create directories for uploads and extracted images
-RUN mkdir -p uploads extract/images data
+RUN mkdir -p uploads extract/images
 
 # Expose port
 EXPOSE 8000
 
-# Default: run the web server
+# Default: run the web server (overridden for worker service)
 CMD ["uv", "run", "fastapi", "run", "src/app.py", "--host", "0.0.0.0", "--port", "8000"]
