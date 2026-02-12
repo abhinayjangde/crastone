@@ -1,3 +1,7 @@
 #!/bin/bash
 
-uv run --env-file=.env rq worker --with-scheduler --url redis://localhost:6379 --worker-class rq.worker.SimpleWorker
+set -a
+source .env
+set +a
+
+uv run --env-file=.env rq worker --with-scheduler --url "$REDIS_URL" --worker-class rq.worker.SimpleWorker
