@@ -1,0 +1,9 @@
+# Fly.io ignores
+.env
+__pycache__/
+*.pyc
+.venv/
+uploads/
+extract/
+*.egg-info/
+.git/

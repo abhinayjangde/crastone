@@ -1,0 +1,19 @@
+app = 'crastone-worker'
+primary_region = 'bom'
+
+[build]
+  dockerfile = 'Dockerfile.fly'
+
+[processes]
+  worker = 'uv run rq worker --with-scheduler --url "$REDIS_URL" --worker-class rq.worker.SimpleWorker'
+
+# No HTTP service needed for the worker
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[mounts]
+  source = 'crastone_worker_data'
+  destination = '/app/data'
