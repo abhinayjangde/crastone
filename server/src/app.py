@@ -1,9 +1,9 @@
 from fastapi import FastAPI, UploadFile, Path
 from fastapi.middleware.cors import CORSMiddleware
-from db.collections.files import files_collection, FileSchema
-from utils.file import save_file_to_disk
-# from workers.workers import process_file
-from workers.q import q
+from .db.collections.files import files_collection, FileSchema
+from .utils.file import save_file_to_disk
+# from .workers.workers import process_file
+from .workers.q import q
 from bson import ObjectId
 
 app = FastAPI()
